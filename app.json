@@ -1,0 +1,12 @@
+{
+  "name": "simflu",
+  "displayName": "simflu",
+  "expo": {
+    "name": "simflu",
+    "slug": "simflu",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
