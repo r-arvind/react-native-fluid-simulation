@@ -3,7 +3,7 @@ export function generateColor () {
     c.r *= 0.15;
     c.g *= 0.15;
     c.b *= 0.15;
-    console.log("generated color");
+    // console.log("generated color");
     return c;
 }
 
