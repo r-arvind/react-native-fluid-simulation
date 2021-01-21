@@ -118,3 +118,4 @@ export function scaleByPixelRatio (input) {
     let pixelRatio = PixelRatio.get() || 1;
     return Math.floor(input * pixelRatio);
 }
+

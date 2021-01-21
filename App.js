@@ -187,44 +187,25 @@ function addKeywords (source, keywords) {
 }
 
 const baseVertexShader = compileShader(gl.VERTEX_SHADER, shaders.baseVertex);
-
 const blurVertexShader = compileShader(gl.VERTEX_SHADER, shaders.blurVertex);
-
 const blurShader = compileShader(gl.FRAGMENT_SHADER, shaders.blur);
-
 const copyShader = compileShader(gl.FRAGMENT_SHADER, shaders.copy);
-
 const clearShader = compileShader(gl.FRAGMENT_SHADER, shaders.clear);
-
 const colorShader = compileShader(gl.FRAGMENT_SHADER, shaders.color);
-
 const checkerboardShader = compileShader(gl.FRAGMENT_SHADER, shaders.checkerboard);
-
-
 const bloomPrefilterShader = compileShader(gl.FRAGMENT_SHADER, shaders.bloomPrefilterShader);
-
 const bloomBlurShader = compileShader(gl.FRAGMENT_SHADER, shaders.bloomBlurShader);
-
 const bloomFinalShader = compileShader(gl.FRAGMENT_SHADER, shaders.bloomFinalShader);
-
 const sunraysMaskShader = compileShader(gl.FRAGMENT_SHADER, shaders.sunraysMaskShader);
-
 const sunraysShader = compileShader(gl.FRAGMENT_SHADER, shaders.sunraysShader);
-
 const splatShader = compileShader(gl.FRAGMENT_SHADER, shaders.splat);
-
 const advectionShader = compileShader(gl.FRAGMENT_SHADER, shaders.advection,
     ext.supportLinearFiltering ? null : ['MANUAL_FILTERING']
 );
-
 const divergenceShader = compileShader(gl.FRAGMENT_SHADER, shaders.divergence);
-
 const curlShader = compileShader(gl.FRAGMENT_SHADER, shaders.curl);
-
 const vorticityShader = compileShader(gl.FRAGMENT_SHADER, shaders.vorticity);
-
 const pressureShader = compileShader(gl.FRAGMENT_SHADER, shaders.pressure);
-
 const gradientSubtractShader = compileShader(gl.FRAGMENT_SHADER, shaders.gradientSubtract);
 
 const blit = (() => {
@@ -296,8 +277,8 @@ const displayMaterial = new Material(baseVertexShader, shaders.displaySource);
 
 
 function initFramebuffers () {
-    let simRes = getResolution(config.SIM_RESOLUTION);
-    let dyeRes = getResolution(config.DYE_RESOLUTION);
+    let simRes = Utils.getResolution(gl, config.SIM_RESOLUTION);
+    let dyeRes = Utils.getResolution(gl, config.DYE_RESOLUTION);
 
     const texType = ext.halfFloatTexType;
     const rgba    = ext.formatRGBA;
@@ -326,7 +307,7 @@ function initFramebuffers () {
 }
 
 function initBloomFramebuffers () {
-    let res = getResolution(config.BLOOM_RESOLUTION);
+    let res = Utils.getResolution(gl, config.BLOOM_RESOLUTION);
 
     const texType = ext.halfFloatTexType;
     const rgba = ext.formatRGBA;
@@ -348,7 +329,7 @@ function initBloomFramebuffers () {
 }
 
 function initSunraysFramebuffers () {
-    let res = getResolution(config.SUNRAYS_RESOLUTION);
+    let res = Utils.getResolution(gl, config.SUNRAYS_RESOLUTION);
 
     const texType = ext.halfFloatTexType;
     const r = ext.formatR;
@@ -650,7 +631,7 @@ function drawDisplay (target) {
     if (config.BLOOM) {
         gl.uniform1i(displayMaterial.uniforms.uBloom, bloom.attach(1));
         gl.uniform1i(displayMaterial.uniforms.uDithering, ditheringTexture.attach(2));
-        let scale = getTextureScale(ditheringTexture, width, height);
+        let scale = Utils.getTextureScale(ditheringTexture, width, height);
         gl.uniform2f(displayMaterial.uniforms.ditherScale, scale.x, scale.y);
     }
     if (config.SUNRAYS)
@@ -772,26 +753,7 @@ function correctRadius (radius) {
     return radius;
 }
 
-function getResolution (resolution) {
-    let aspectRatio = gl.drawingBufferWidth / gl.drawingBufferHeight;
-    if (aspectRatio < 1)
-        aspectRatio = 1.0 / aspectRatio;
 
-    let min = Math.round(resolution);
-    let max = Math.round(resolution * aspectRatio);
-
-    if (gl.drawingBufferWidth > gl.drawingBufferHeight)
-        return { width: max, height: min };
-    else
-        return { width: min, height: max };
-}
-
-function getTextureScale (texture, width, height) {
-    return {
-        x: width / texture.width,
-        y: height / texture.height
-    };
-}
 
 function hashCode (s) {
     if (s.length == 0) return 0;
